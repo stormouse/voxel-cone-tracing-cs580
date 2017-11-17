@@ -18,6 +18,9 @@ Object::~Object() {
 }
 
 void Object::CheckObjectPath() {
+	//convert string to lowercase
+	transform(obj_path.begin(), obj_path.end(), obj_path.begin(), ::tolower);
+	
 	if (this->obj_path.find("buddha") != string::npos) {
 		this->objectType = Buddha;
 	}
@@ -34,7 +37,7 @@ void Object::CheckObjectPath() {
 		this->objectType = Susanne;
 	}
 	else {
-		this->objectType = Cornell;
+		this->objectType = Bunny;
 	}
 }
 
