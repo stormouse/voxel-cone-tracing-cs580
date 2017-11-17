@@ -6,6 +6,8 @@
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 
+#include "Object\Object Loader\Object.h"
+
 #include <iostream>
 using namespace std;
 
@@ -34,6 +36,9 @@ int main(int argc, char **argv) {
 
 	GLFWwindow* window = glfwCreateWindow(800, 600, "Empty Project", NULL, NULL);
 
+	
+	
+
 	if (!window) {
 		glfwTerminate();
 		return EXIT_FAILURE;
@@ -49,6 +54,9 @@ int main(int argc, char **argv) {
 	glm::mat4 check_glm_imported = glm::rotate(glm::mat4(1.0f), 45.0f,
 		glm::vec3(0, 1.0f, 0));
 
+	/*Object object = Object();
+	GLuint program = 0;
+	object.UploadRenderSetting(program);*/
 
 	while (!glfwWindowShouldClose(window)) {
 		glfwPollEvents();

@@ -124,6 +124,18 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Object\Material\Material.cpp" />
+    <ClCompile Include="Object\Mesh\Mesh.cpp" />
+    <ClCompile Include="Object\Object Loader\Object.cpp" />
+    <ClCompile Include="Object\Object Loader\tiny_obj_loader.cpp" />
+    <ClCompile Include="Object\Transform\Transform.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Object\Material\Material.h" />
+    <ClInclude Include="Object\Mesh\Mesh.h" />
+    <ClInclude Include="Object\Object Loader\Object.h" />
+    <ClInclude Include="Object\Object Loader\tiny_obj_loader.h" />
+    <ClInclude Include="Object\Transform\Transform.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
