@@ -7,6 +7,8 @@
 #include "glm/gtc/type_ptr.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 
+#include "Object\Object Loader\Object.h"
+
 #include <iostream>
 using namespace std;
 
@@ -76,6 +78,9 @@ int main(int argc, char **argv) {
 
 	GLFWwindow* window = glfwCreateWindow(800, 600, "Empty Project", NULL, NULL);
 
+	
+	
+
 	if (!window) {
 		glfwTerminate();
 		return EXIT_FAILURE;
@@ -101,6 +106,10 @@ int main(int argc, char **argv) {
 	cout << "Start generating voxel map" << endl;
 	app.GenerateVoxelMap();
 	cout << "End generating voxel map" << endl;
+	//Object object = Object("Assets\\Models\\bunny.obj");
+	//Object object = Object(); //default is Assets\\Models\\cornell.obj
+	//GLuint program = 0;
+	//object.UploadRenderSetting(program);
 
 	while (!glfwWindowShouldClose(window)) {
 		glfwPollEvents();
