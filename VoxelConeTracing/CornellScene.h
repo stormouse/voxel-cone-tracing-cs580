@@ -11,7 +11,7 @@
 // debug model
 #include "MockModel.h"
 
-class CornellScene : Scene
+class CornellScene : public Scene
 {
 public:
 	CornellScene();

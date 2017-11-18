@@ -12,6 +12,7 @@ using namespace std;
 
 #include "Shader.h"
 #include "CornellScene.h"
+#include "Application.h"
 
 
 void error_callback(int error, const char* description)
@@ -96,6 +97,10 @@ int main(int argc, char **argv) {
 	Shader basicShader(basicShaderVS, basicShaderFS);
 
 	CornellScene scene;
+	Application app;
+	cout << "Start generating voxel map" << endl;
+	app.GenerateVoxelMap();
+	cout << "End generating voxel map" << endl;
 
 	while (!glfwWindowShouldClose(window)) {
 		glfwPollEvents();

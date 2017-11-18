@@ -123,6 +123,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Application.cpp" />
     <ClCompile Include="CornellScene.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MockModel.cpp" />
@@ -130,6 +131,7 @@
     <ClCompile Include="Shader.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Application.h" />
     <ClInclude Include="CornellScene.h" />
     <ClInclude Include="MockModel.h" />
     <ClInclude Include="Scene.h" />

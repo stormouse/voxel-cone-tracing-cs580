@@ -54,8 +54,8 @@ void CornellScene::RotateCamera(float dx, float dy) {
 	if (angleY < -80.0f) angleY = -80.0f;
 	cameraRotateX = glm::rotate(glm::mat4(1.0f), angleX, glm::vec3(0.0f, 1.0f, 0.0f));
 	cameraRotateY = glm::rotate(glm::mat4(1.0f), angleY, glm::vec3(1.0f, 0.0f, 0.0f));
-	this->cameraForward		= glm::vec3(glm::vec4(0.0f, 0.0f, -1.0f, 0.0f) * cameraRotateY * cameraRotateX);
-	this->cameraRight		= glm::vec3(glm::vec4(1.0f, 0.0f, 0.0f, 0.0f) * cameraRotateY * cameraRotateX);
+	this->cameraForward	= glm::vec3(glm::vec4(0.0f, 0.0f, -1.0f, 0.0f) * cameraRotateY * cameraRotateX);
+	this->cameraRight	= glm::vec3(glm::vec4(1.0f, 0.0f, 0.0f, 0.0f) * cameraRotateY * cameraRotateX);
 }
 
 
@@ -87,3 +87,4 @@ const float* CornellScene::getViewTransform() {
 const float* CornellScene::getProjectionTransform() {
 	return glm::value_ptr(cameraProjection);
 }
+
