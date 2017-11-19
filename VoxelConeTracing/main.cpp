@@ -7,8 +7,6 @@
 #include "glm/gtc/type_ptr.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 
-#include "Object\Object Loader\Object.h"
-
 #include <iostream>
 using namespace std;
 
@@ -101,15 +99,14 @@ int main(int argc, char **argv) {
 	char* basicShaderFS = "Shaders/basicshader.frag";
 	Shader basicShader(basicShaderVS, basicShaderFS);
 
+
 	CornellScene scene;
 	Application app;
 	cout << "Start generating voxel map" << endl;
-	app.GenerateVoxelMap();
+	//app.GenerateVoxelMap();
 	cout << "End generating voxel map" << endl;
-	//Object object = Object("Assets\\Models\\bunny.obj");
-	//Object object = Object(); //default is Assets\\Models\\cornell.obj
-	//GLuint program = 0;
-	//object.UploadRenderSetting(program);
+	
+
 
 	while (!glfwWindowShouldClose(window)) {
 		glfwPollEvents();
@@ -125,18 +122,19 @@ int main(int argc, char **argv) {
 		glClearColor(0.4f, 0.5f, 0.7f, 1.0f);
 		glClearDepth(1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		
+
 		
 		basicShader.Use();
 		camera_movement_control(scene);
 
 		glm::mat4 modelTransform = glm::mat4(1.0f);
-		glUniformMatrix4fv(glGetUniformLocation(basicShader.Program, "modelTransform"),		 1, GL_FALSE, glm::value_ptr(modelTransform));
+		glUniformMatrix4fv(glGetUniformLocation(basicShader.Program, "M"),					 1, GL_FALSE, glm::value_ptr(modelTransform));
 		glUniformMatrix4fv(glGetUniformLocation(basicShader.Program, "viewTransform"),		 1, GL_FALSE, scene.getViewTransform());
 		glUniformMatrix4fv(glGetUniformLocation(basicShader.Program, "projectionTransform"), 1, GL_FALSE, scene.getProjectionTransform());
 
 		
-		scene.Render();
+		scene.Render(basicShader.Program);
+		//scene.Render();
 
 		glfwSwapBuffers(window);
 	}

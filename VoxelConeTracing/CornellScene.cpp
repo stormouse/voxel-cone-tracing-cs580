@@ -22,12 +22,14 @@ CornellScene::CornellScene()
 	this->cameraForward = glm::vec3(glm::vec4(0.0f, 0.0f, -1.0f, 0.0f) * cameraRotateY * cameraRotateX);
 	this->cameraRight = glm::vec3(glm::vec4(1.0f, 0.0f, 0.0f, 0.0f) * cameraRotateY * cameraRotateX);
 
-	
+	object = new Object("Assets\\Models\\cornell.obj");
+
 }
 
 
 CornellScene::~CornellScene()
 {
+	delete object;
 }
 
 
@@ -75,7 +77,11 @@ void CornellScene::Render() {
 	glm::mat4 modelMat = glm::mat4(1.0f);
 
 	debug_testModel.Draw();
+	// object->UploadRenderSetting();
+}
 
+void CornellScene::Render(GLuint program) {
+	object->UploadRenderSetting(program);
 }
 
 const float* CornellScene::getViewTransform() {

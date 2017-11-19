@@ -11,11 +11,15 @@
 // debug model
 #include "MockModel.h"
 
+#include "Object\Object Loader\Object.h"
+
+
 class CornellScene : public Scene
 {
 public:
 	CornellScene();
 	void Render() override;
+	void Render(GLuint program);
 	virtual ~CornellScene();
 
 	void SetScreenSize(int w, int h);
@@ -53,6 +57,7 @@ private:
 // debug use
 public:
 	MockModel debug_testModel;
+	Object *object;
 
 };
 
