@@ -59,7 +59,7 @@ public:
 	VoxelVisualization(int width, int height);
 	~VoxelVisualization();
 
-	void RenderVoxelVisualization(RENDER_SCENE scene, GLuint voxelTextureID);
+	void RenderVoxelVisualization(RENDER_SCENE& scene, GLuint voxelTextureID);
 
 private:
 	

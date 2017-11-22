@@ -75,9 +75,6 @@ void CornellScene::Render() {
 	lastRenderTime = now;
 
 	glm::mat4 modelMat = glm::mat4(1.0f);
-
-	debug_testModel.Draw();
-	// object->UploadRenderSetting();
 }
 
 void CornellScene::Render(GLuint program) {

@@ -7,11 +7,11 @@ uniform mat4 M;
 uniform mat4 V;
 uniform mat4 P;
 
-out vec3 worldPositionGeom;
-out vec3 normalGeom;
+out vec3 geomPosition_worldspace;
+out vec3 geomNormal;
 
 void main(){
-	worldPositionGeom = vec3(M * vec4(position, 1));
-	normalGeom = normalize(mat3(transpose(inverse(M))) * normal);
-	gl_Position = P * V * vec4(worldPositionGeom, 1);
+	geomPosition_worldspace = vec3(M * vec4(position, 1));
+	geomNormal = normalize(mat3(transpose(inverse(M))) * normal);
+	gl_Position = P * V * vec4(geomPosition_worldspace, 1);
 }

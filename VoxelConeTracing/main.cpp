@@ -78,8 +78,6 @@ int main(int argc, char **argv) {
 
 	GLFWwindow* window = glfwCreateWindow(800, 600, "Empty Project", NULL, NULL);
 
-	
-	
 
 	if (!window) {
 		glfwTerminate();
@@ -102,11 +100,10 @@ int main(int argc, char **argv) {
 	Shader basicShader(basicShaderVS, basicShaderFS);
 
 
-	Scene *scene = new CornellScene();
+	CornellScene *scene = new CornellScene();
+	
 	Application app;
-	cout << "Start generating voxel map" << endl;
 	app.GenerateVoxelMap();
-	cout << "End generating voxel map" << endl;
 
 	VoxelVisualization vv(800, 600);
 
@@ -116,13 +113,9 @@ int main(int argc, char **argv) {
 		glfwGetCursorPos(window, &curr_mouse_x, &curr_mouse_y);
 		camera_rotation_control(scene);
 		glfwSetCursorPos(window, 400, 300);
+		camera_movement_control(scene);
 
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-		glViewport(0, 0, 800, 600);
-
-		vv.RenderVoxelVisualization(*(dynamic_cast<CornellScene*>(scene)), app.voxelTexture3D);
-
+		vv.RenderVoxelVisualization(*scene, app.voxelTexture3D);
 		glfwSwapBuffers(window);
 	}
 
@@ -132,6 +125,10 @@ int main(int argc, char **argv) {
 
 
 // in render loop
+
+//glfwGetCursorPos(window, &curr_mouse_x, &curr_mouse_y);
+//camera_rotation_control(scene);
+//glfwSetCursorPos(window, 400, 300);
 
 //glEnable(GL_DEPTH_TEST);
 //glEnable(GL_CULL_FACE);

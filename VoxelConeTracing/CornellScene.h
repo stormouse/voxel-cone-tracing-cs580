@@ -7,10 +7,6 @@
 
 #include <vector>
 
-
-// debug model
-#include "MockModel.h"
-
 #include "Object\Object Loader\Object.h"
 
 
@@ -50,7 +46,6 @@ private:
 
 	std::vector<glm::vec3> pointLightSources;
 
-	
 
 	float		lastRenderTime;
 
@@ -58,7 +53,6 @@ private:
 
 // debug use
 public:
-	MockModel debug_testModel;
 	Object *object;
 
 };
