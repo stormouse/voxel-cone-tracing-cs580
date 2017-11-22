@@ -10,5 +10,8 @@ public:
 	Shader(const GLchar* vertexPath, const GLchar* geometryPath, const GLchar* fragmentPath);
 	void Use();
 	~Shader();
+private:
+	enum ShaderPipelineType { VertFrag, VertGeomFrag };
+	ShaderPipelineType pipelineType;
 };
 
