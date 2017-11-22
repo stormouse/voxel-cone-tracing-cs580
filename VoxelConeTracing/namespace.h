@@ -30,6 +30,12 @@ namespace {
 	const char * specularReflectanceName = "specularReflectivity";
 	const char * diffuseReflectanceName = "diffuseReflectivity";
 	const char * specularDiffusionName = "specularDiffusion";
+
+	const char * lightPositionName = "lightPosition";
+	const char * lightColorName = "lightColor";
+	const char * lightIntensityName = "lightIntensity";
+	const char * voxelDimensionName = "voxelDimension";
+	
 }
 
 

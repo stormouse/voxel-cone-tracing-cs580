@@ -42,7 +42,7 @@ VoxelVisualization::~VoxelVisualization() {
 	}
 }
 
-void VoxelVisualization::RenderVoxelVisualization(RENDER_SCENE scene, GLuint voxelTextureID) {
+void VoxelVisualization::RenderVoxelVisualization(RENDER_SCENE& scene, GLuint voxelTextureID) {
 	GLuint worldPostionProgram = worldPostionShader->Program;
 	glUseProgram(worldPostionProgram);
 

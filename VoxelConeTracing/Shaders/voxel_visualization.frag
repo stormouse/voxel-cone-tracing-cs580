@@ -35,6 +35,7 @@ void main() {
 		vec3 coordinate = scaleAndBias(currentPoint);
 		vec4 currentSample = textureLod(texture3D, scaleAndBias(currentPoint), mipmapLevel);
 		color += (1.0f - color.a) * currentSample;
-	} 
+	}
+	
 	//color.rgb = pow(color.rgb, vec3(1.0 / 2.2));
 }

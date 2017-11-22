@@ -1,7 +1,7 @@
 #include "Application.h"
 
 #include "CornellScene.h"
-
+#include "namespace.h"
 
 struct PointLight {
 	glm::vec3 position;
@@ -12,7 +12,7 @@ struct PointLight {
 
 Application::Application()
 {
-	this->scene = dynamic_cast<Scene*>(new CornellScene());
+	this->scene = new CornellScene();
 	this->voxelDimensions = 64;
 
 	// load shader
@@ -25,18 +25,23 @@ Application::Application()
 	// init texture
 	glGenTextures(1, &voxelTexture3D);
 	glBindTexture(GL_TEXTURE_3D, voxelTexture3D);
+	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_BORDER);
 	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
 	int numVoxels = voxelDimensions * voxelDimensions * voxelDimensions;
-	GLubyte* data = new GLubyte[numVoxels * 4];
-	memset(data, 0, numVoxels * 4 * sizeof(GLubyte));
+	GLfloat* data = new GLfloat[numVoxels * 4];
+	memset(data, 0, numVoxels * 4 * sizeof(GLfloat));
 
-	glTexImage3D(GL_TEXTURE_3D, 0, GL_RGBA8, voxelDimensions, voxelDimensions, voxelDimensions, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+	glTexStorage3D(GL_TEXTURE_3D, 7, GL_RGBA8, voxelDimensions, voxelDimensions, voxelDimensions);
+	glTexImage3D(GL_TEXTURE_3D, 0, GL_RGBA8, voxelDimensions, voxelDimensions, voxelDimensions, 0, GL_RGBA, GL_FLOAT, data);
 	delete[] data;
 
 	glGenerateMipmap(GL_TEXTURE_3D);
 
+	glBindTexture(GL_TEXTURE_3D, 0);
 }
 
 
@@ -54,44 +59,51 @@ Application::~Application()
 
 
 void Application::GenerateVoxelMap() {
+	//float clearColor[4] = { 1, 1, 1, 1 };
+	//GLint previousBoundTextureID;
+	//glGetIntegerv(GL_TEXTURE_BINDING_3D, &previousBoundTextureID);
+	//glBindTexture(GL_TEXTURE_3D, voxelTexture3D);
+	//glClearTexImage(voxelTexture3D, 0, GL_RGBA, GL_FLOAT, &clearColor);
+	//glBindTexture(GL_TEXTURE_3D, previousBoundTextureID);
 
 	PointLight light;
 	light.color = glm::vec3(1.0f, 1.0f, 1.0f);
 	light.intensity = 1.0f;
 	light.position = glm::vec3(-0.2f, 0.8f, 0.0f);
 
-
+	voxelizationShader->Use();
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	
+	glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
 	glDisable(GL_CULL_FACE);
 	glDisable(GL_DEPTH_TEST);
 	glDisable(GL_BLEND);
-	
+
 	glViewport(0, 0, voxelDimensions, voxelDimensions);
 	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	voxelizationShader->Use();
-
-	glUniform1i(glGetUniformLocation(voxelizationShader->Program, "voxelDimensions"), voxelDimensions);
-	glUniformMatrix4fv(glGetUniformLocation(voxelizationShader->Program, "V"), 1, GL_FALSE, scene->getViewTransform());
-	glUniformMatrix4fv(glGetUniformLocation(voxelizationShader->Program, "P"), 1, GL_FALSE, scene->getProjectionTransform());
-	glUniform3fv(glGetUniformLocation(voxelizationShader->Program, "pointlights[0].position"), 1, glm::value_ptr(light.position));
-	glUniform3fv(glGetUniformLocation(voxelizationShader->Program, "pointlights[0].color"), 1, glm::value_ptr(light.color));
-	glUniform1f(glGetUniformLocation(voxelizationShader->Program, "pointlights[0].intensity"), light.intensity);
+	glUniform1i(glGetUniformLocation(voxelizationShader->Program, voxelDimensionName), voxelDimensions);
+	glUniformMatrix4fv(glGetUniformLocation(voxelizationShader->Program, viewMatrixName), 1, GL_FALSE, scene->getViewTransform());
+	glUniformMatrix4fv(glGetUniformLocation(voxelizationShader->Program, projectionMatrixName), 1, GL_FALSE, scene->getProjectionTransform());
+	glUniform3fv(glGetUniformLocation(voxelizationShader->Program, lightPositionName), 1, glm::value_ptr(light.position));
+	glUniform3fv(glGetUniformLocation(voxelizationShader->Program, lightColorName), 1, glm::value_ptr(light.color));
+	glUniform1f(glGetUniformLocation(voxelizationShader->Program, lightIntensityName), light.intensity);
 
 
-	glActiveTexture(GL_TEXTURE2);
+	int texIdx = 0;
+	glActiveTexture(GL_TEXTURE0 + texIdx);
 	glBindTexture(GL_TEXTURE_3D, voxelTexture3D);
-	//glBindImageTexture(2, voxelTexture3D, 0, GL_TRUE, 0, GL_WRITE_ONLY, GL_RGBA8);
-	glUniform1i(glGetUniformLocation(voxelizationShader->Program, "voxelTexture"), 2);
-
+	glUniform1i(glGetUniformLocation(voxelizationShader->Program, texture3DName), texIdx);
+	glBindImageTexture(texIdx, voxelTexture3D, 0, GL_TRUE, 0, GL_WRITE_ONLY, GL_RGBA8);
 
 	scene->Render(voxelizationShader->Program);
 
 	glGenerateMipmap(GL_TEXTURE_3D);
 
-	glViewport(0, 0, screenWidth, screenHeight);
+	glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+
+	//glViewport(0, 0, screenWidth, screenHeight);
 
 	glUseProgram(0);
 
