@@ -324,12 +324,15 @@ void Object::SusanneMaterial() {
 
 /*Uploading rendering settings to shader*/
 void Object::Render(GLuint program) {
-	if (materials.empty()) {
-		return;
-	}		
-
+	bool has_material = false;
+	if (!materials.empty()) {
+		has_material = true;
+	}
 	for (int i = 0; i < this->mesh_size; i++) {
+		if (has_material) {
+			materials[i]->BindMaterialToProgram(program);
+		}		
 		meshes[i].BindMeshToProgram(program);
-		materials[i]->BindMaterialToProgram(program);
+		
 	}
 }

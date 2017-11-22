@@ -30,7 +30,7 @@ void main() {
 
 	// Trace.
 	color = vec4(0.0f);
-	for(uint step = 0; step < numberOfSteps && color.a < 0.99f; ++step) {
+	for(int step = 0; step < numberOfSteps && color.a < 0.99f; ++step) {
 		vec3 currentPoint = origin + STEP_LENGTH * step * direction;
 		vec3 coordinate = scaleAndBias(currentPoint);
 		vec4 currentSample = textureLod(texture3D, scaleAndBias(currentPoint), mipmapLevel);
