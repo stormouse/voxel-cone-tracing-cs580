@@ -29,7 +29,9 @@ enum ObjectType
 	Bunny,
 	Cornell,
 	Dragon,
-	Susanne
+	Susanne,
+	Quad,
+	None
 };
 
 
@@ -46,10 +48,11 @@ public:
 	Object(string path = "Assets\\Models\\cornell.obj");
 	~Object();
 
-	void UploadRenderSetting(GLuint program);
+	void Render(GLuint program);
 
 private:
 	void CheckObjectPath();
+	void createQuad();
 
 	void LoadObject();
 	void BindObjectToBuffer();

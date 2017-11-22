@@ -4,7 +4,12 @@ Object::Object(string path) {
 	this->obj_path = path;
 	
 	this->CheckObjectPath();
-	this->LoadObject();
+	if (this->objectType != Quad) {
+		this->LoadObject();
+	}
+	else {
+		this->createQuad();
+	}
 	this->BindObjectToBuffer();
 	this->TransformObject();
 	this->AssignMaterial();
@@ -36,9 +41,42 @@ void Object::CheckObjectPath() {
 	else if (this->obj_path.find("susanne") != string::npos) {
 		this->objectType = Susanne;
 	}
-	else {
-		this->objectType = Bunny;
+	else if (this->obj_path.find("quad") != string::npos) {
+		this->objectType = Quad;
 	}
+	else {
+		this->objectType = None;
+	}
+}
+
+void Object::createQuad() {
+	Mesh mesh;
+	VertexData vertex;
+
+	vertex.position = { -1, -1, 1 };
+	vertex.texCoord = { 0, 1 };
+	vertex.normal = { 0, 0, 1 };
+	mesh.vertexData.push_back(vertex);
+
+	vertex.position = { 1, -1, 1 };
+	vertex.texCoord = { 0, 0 };
+	vertex.normal = { 0, 0, 1 };
+	mesh.vertexData.push_back(vertex);
+
+	vertex.position = { 1, 1, 1 };
+	vertex.texCoord = { 1, 1 };
+	vertex.normal = { 0, 0, 1 };
+	mesh.vertexData.push_back(vertex);
+
+	vertex.position = { -1, 1, 1 };
+	vertex.texCoord = { 1 , 0 };
+	vertex.normal = { 0, 0, 1 };
+	mesh.vertexData.push_back(vertex);
+
+	mesh.indices = { 0, 1, 2, 0, 2, 3 };
+	this->meshes.push_back(mesh);
+	this->mesh_size = meshes.size();
+	std::cout << std::setprecision(4) << " - Creating Quad Successfully." << std::endl;
 }
 
 void Object::LoadObject() {
@@ -285,7 +323,11 @@ void Object::SusanneMaterial() {
 }
 
 /*Uploading rendering settings to shader*/
-void Object::UploadRenderSetting(GLuint program) {
+void Object::Render(GLuint program) {
+	if (materials.empty()) {
+		return;
+	}		
+
 	for (int i = 0; i < this->mesh_size; i++) {
 		meshes[i].BindMeshToProgram(program);
 		materials[i]->BindMaterialToProgram(program);

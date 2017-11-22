@@ -81,7 +81,7 @@ void CornellScene::Render() {
 }
 
 void CornellScene::Render(GLuint program) {
-	object->UploadRenderSetting(program);
+	object->Render(program);
 }
 
 const float* CornellScene::getViewTransform() {
@@ -93,4 +93,11 @@ const float* CornellScene::getViewTransform() {
 const float* CornellScene::getProjectionTransform() {
 	return glm::value_ptr(cameraProjection);
 }
+
+void CornellScene::BindCameraToProgram(GLuint program) {
+	glUniformMatrix4fv(glGetUniformLocation(program, viewMatrixName), 1, GL_FALSE, getViewTransform());
+	glUniformMatrix4fv(glGetUniformLocation(program, projectionMatrixName), 1, GL_FALSE, getProjectionTransform());
+	glUniform3fv(glGetUniformLocation(program, cameraPostionName), 1, glm::value_ptr(this->cameraPosition));
+}
+
 
