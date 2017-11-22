@@ -30,6 +30,8 @@ public:
 	const float* getViewTransform();
 	const float* getProjectionTransform();
 
+	void BindCameraToProgram(GLuint program);
+
 private:
 	int			screenWidth;
 	int			screenHeight;

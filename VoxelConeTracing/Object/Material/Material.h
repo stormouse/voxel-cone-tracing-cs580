@@ -8,16 +8,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/glm.hpp>
 
-namespace {
-	const char * diffuseColorName = "diffuseColor";
-	const char * specularColorName = "specularColor";
-	const char * emissivityName = "emissivity";
-	const char * transparencyName = "transparency";
-	const char * refractiveIndexName = "refractiveIndex";
-	const char * specularReflectanceName = "specularReflectivity";
-	const char * diffuseReflectanceName = "diffuseReflectivity";
-	const char * specularDiffusionName = "specularDiffusion";
-}
+#include "../../namespace.h"
 
 struct Material {
 	glm::vec3 diffuseColor, specularColor;

@@ -8,16 +8,8 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <vector>
 #include "../Transform/Transform.h"
+#include "../../namespace.h"
 using namespace std;
-
-namespace {
-	const char * positionName = "position";
-	const char * normalName = "normal";
-	const char * colorName = "color";
-	const char * texCoordName = "texCoord";
-	const char * indicesName = "indices";
-	const char * modelMatrixName = "M";
-}
 
 /*
 VertexData is a struct to store position, color, normal and texCoord of every vertex
