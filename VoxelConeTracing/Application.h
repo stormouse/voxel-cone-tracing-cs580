@@ -17,9 +17,9 @@ public:
 
 	void GenerateVoxelMap();
 
-
-private:
 	GLuint	voxelTexture3D;
+private:
+	
 	int		voxelDimensions;
 
 	int		screenWidth;

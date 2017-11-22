@@ -2,6 +2,14 @@
 
 #include "CornellScene.h"
 
+
+struct PointLight {
+	glm::vec3 position;
+	glm::vec3 color;
+	float	  intensity;
+};
+
+
 Application::Application()
 {
 	this->scene = dynamic_cast<Scene*>(new CornellScene());
@@ -46,19 +54,18 @@ Application::~Application()
 
 
 void Application::GenerateVoxelMap() {
-	
-	float size = scene->worldSize;
 
-	auto projectionMatrix = glm::ortho(-size * 0.5f, size * 0.5f, -size*0.5f, size*0.5f, size * 0.5f, size * 1.5f);
-	auto projX = projectionMatrix * glm::lookAt(glm::vec3(size, 0, 0), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
-	auto projY = projectionMatrix * glm::lookAt(glm::vec3(0, size, 0), glm::vec3(0, 0, 0), glm::vec3(0, 0, -1));
-	auto projZ = projectionMatrix * glm::lookAt(glm::vec3(0, 0, size), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
+	PointLight light;
+	light.color = glm::vec3(1.0f, 1.0f, 1.0f);
+	light.intensity = 1.0f;
+	light.position = glm::vec3(-0.2f, 0.8f, 0.0f);
+
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	
-
 	glDisable(GL_CULL_FACE);
 	glDisable(GL_DEPTH_TEST);
+	glDisable(GL_BLEND);
 	
 	glViewport(0, 0, voxelDimensions, voxelDimensions);
 	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
@@ -67,20 +74,21 @@ void Application::GenerateVoxelMap() {
 	voxelizationShader->Use();
 
 	glUniform1i(glGetUniformLocation(voxelizationShader->Program, "voxelDimensions"), voxelDimensions);
-	glUniformMatrix4fv(glGetUniformLocation(voxelizationShader->Program, "ProjX"), 1, GL_FALSE, &projX[0][0]);
-	glUniformMatrix4fv(glGetUniformLocation(voxelizationShader->Program, "ProjY"), 1, GL_FALSE, &projY[0][0]);
-	glUniformMatrix4fv(glGetUniformLocation(voxelizationShader->Program, "ProjZ"), 1, GL_FALSE, &projZ[0][0]);
-
-
-	glBindImageTexture(2, voxelTexture3D, 0, GL_TRUE, 0, GL_WRITE_ONLY, GL_RGBA8);
-	glUniform1i(glGetUniformLocation(voxelizationShader->Program, "voxelTexture"), 2);
-
-
-	scene->Render();
+	glUniformMatrix4fv(glGetUniformLocation(voxelizationShader->Program, "V"), 1, GL_FALSE, scene->getViewTransform());
+	glUniformMatrix4fv(glGetUniformLocation(voxelizationShader->Program, "P"), 1, GL_FALSE, scene->getProjectionTransform());
+	glUniform3fv(glGetUniformLocation(voxelizationShader->Program, "pointlights[0].position"), 1, glm::value_ptr(light.position));
+	glUniform3fv(glGetUniformLocation(voxelizationShader->Program, "pointlights[0].color"), 1, glm::value_ptr(light.color));
+	glUniform1f(glGetUniformLocation(voxelizationShader->Program, "pointlights[0].intensity"), light.intensity);
 
 
 	glActiveTexture(GL_TEXTURE2);
 	glBindTexture(GL_TEXTURE_3D, voxelTexture3D);
+	//glBindImageTexture(2, voxelTexture3D, 0, GL_TRUE, 0, GL_WRITE_ONLY, GL_RGBA8);
+	glUniform1i(glGetUniformLocation(voxelizationShader->Program, "voxelTexture"), 2);
+
+
+	scene->Render(voxelizationShader->Program);
+
 	glGenerateMipmap(GL_TEXTURE_3D);
 
 	glViewport(0, 0, screenWidth, screenHeight);

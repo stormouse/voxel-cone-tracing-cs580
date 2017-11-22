@@ -11,8 +11,10 @@
 using namespace std;
 
 #include "Shader.h"
+#include "Scene.h"
 #include "CornellScene.h"
 #include "Application.h"
+#include "VoxelVisualization.h"
 
 
 void error_callback(int error, const char* description)
@@ -32,18 +34,18 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
 	case GLFW_KEY_D:
 		if (action == GLFW_PRESS) {
 			isKeyDown[key] = true;
-			cout << key << " is down\n";
+			// cout << key << " is down\n";
 		}
 		else if (action == GLFW_RELEASE) {
 			isKeyDown[key] = false;
-			cout << key << " is up\n";
+			// cout << key << " is up\n";
 		}
 	}
 }
 
 
 
-void camera_movement_control(CornellScene& scene) {
+void camera_movement_control(Scene *scene) {
 	float h, v;
 	h = v = 0.0f;
 	if (isKeyDown[GLFW_KEY_A]) h -= 1.0f;
@@ -51,15 +53,15 @@ void camera_movement_control(CornellScene& scene) {
 	if (isKeyDown[GLFW_KEY_W]) v += 1.0f;
 	if (isKeyDown[GLFW_KEY_S]) v -= 1.0f;
 
-	scene.MoveCamera(h, v);
+	scene->MoveCamera(h, v);
 }
 
 double last_mouse_x = 400.0f, last_mouse_y = 300.0f;
 double curr_mouse_x, curr_mouse_y;
-void camera_rotation_control(CornellScene& scene) {
+void camera_rotation_control(Scene *scene) {
 	float dx = curr_mouse_x - last_mouse_x,
 		  dy = curr_mouse_y - last_mouse_y;
-	scene.RotateCamera(dx * 1e-3, dy * 1e-3);
+	scene->RotateCamera(dx * 3e-3, dy * 2e-3);
 }
 
 
@@ -71,7 +73,7 @@ int main(int argc, char **argv) {
 	glfwSetErrorCallback(error_callback);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_COMPAT_PROFILE);
 	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 
 	GLFWwindow* window = glfwCreateWindow(800, 600, "Empty Project", NULL, NULL);
@@ -100,13 +102,13 @@ int main(int argc, char **argv) {
 	Shader basicShader(basicShaderVS, basicShaderFS);
 
 
-	CornellScene scene;
+	Scene *scene = new CornellScene();
 	Application app;
 	cout << "Start generating voxel map" << endl;
-	//app.GenerateVoxelMap();
+	app.GenerateVoxelMap();
 	cout << "End generating voxel map" << endl;
-	
 
+	VoxelVisualization vv(800, 600);
 
 	while (!glfwWindowShouldClose(window)) {
 		glfwPollEvents();
@@ -115,26 +117,11 @@ int main(int argc, char **argv) {
 		camera_rotation_control(scene);
 		glfwSetCursorPos(window, 400, 300);
 
-		glEnable(GL_DEPTH_TEST);
-		glEnable(GL_CULL_FACE);
-		glCullFace(GL_BACK);
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-		glClearColor(0.4f, 0.5f, 0.7f, 1.0f);
-		glClearDepth(1.0f);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glViewport(0, 0, 800, 600);
 
-		
-		basicShader.Use();
-		camera_movement_control(scene);
-
-		glm::mat4 modelTransform = glm::mat4(1.0f);
-		glUniformMatrix4fv(glGetUniformLocation(basicShader.Program, "M"),					 1, GL_FALSE, glm::value_ptr(modelTransform));
-		glUniformMatrix4fv(glGetUniformLocation(basicShader.Program, "viewTransform"),		 1, GL_FALSE, scene.getViewTransform());
-		glUniformMatrix4fv(glGetUniformLocation(basicShader.Program, "projectionTransform"), 1, GL_FALSE, scene.getProjectionTransform());
-
-		
-		scene.Render(basicShader.Program);
-		//scene.Render();
+		vv.RenderVoxelVisualization(*(dynamic_cast<CornellScene*>(scene)), app.voxelTexture3D);
 
 		glfwSwapBuffers(window);
 	}
@@ -142,3 +129,26 @@ int main(int argc, char **argv) {
 	return 0;
 }
 
+
+
+// in render loop
+
+//glEnable(GL_DEPTH_TEST);
+//glEnable(GL_CULL_FACE);
+//glCullFace(GL_BACK);
+
+//glClearColor(0.4f, 0.5f, 0.7f, 1.0f);
+//glClearDepth(1.0f);
+//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+//basicShader.Use();
+
+//camera_movement_control(scene);
+
+//glm::mat4 modelTransform = glm::mat4(1.0f);
+//glUniformMatrix4fv(glGetUniformLocation(basicShader.Program, "M"),					 1, GL_FALSE, glm::value_ptr(modelTransform));
+//glUniformMatrix4fv(glGetUniformLocation(basicShader.Program, "viewTransform"),		 1, GL_FALSE, scene->getViewTransform());
+//glUniformMatrix4fv(glGetUniformLocation(basicShader.Program, "projectionTransform"), 1, GL_FALSE, scene->getProjectionTransform());
+
+//
+//scene->Render(basicShader.Program);
