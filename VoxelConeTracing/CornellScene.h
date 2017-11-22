@@ -19,16 +19,16 @@ class CornellScene : public Scene
 public:
 	CornellScene();
 	void Render() override;
-	void Render(GLuint program);
+	void Render(GLuint program) override;
 	virtual ~CornellScene();
 
-	void SetScreenSize(int w, int h);
+	void SetScreenSize(int w, int h) override;
 
-	void MoveCamera(float h, float v);
-	void RotateCamera(float x, float y);
+	void MoveCamera(float h, float v) override;
+	void RotateCamera(float x, float y) override;
 
-	const float* getViewTransform();
-	const float* getProjectionTransform();
+	const float* getViewTransform() override;
+	const float* getProjectionTransform() override;
 
 private:
 	int			screenWidth;
