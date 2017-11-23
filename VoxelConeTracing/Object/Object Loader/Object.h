@@ -80,6 +80,7 @@ private:
 	string obj_path;
 	int mesh_size;
 	ObjectType objectType;
+	bool has_material;
 };
 
 

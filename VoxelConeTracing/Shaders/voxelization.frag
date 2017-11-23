@@ -25,6 +25,6 @@ void main(){
 		 color = color * diffuseColor * diffuseReflectivity;
 	vec3 voxel = 0.5f * fragPosition_worldspace + vec3(0.5f);
 	float alpha = pow(1 - transparency, 4);
-	vec4 res = alpha * vec4(voxel, 1);
+	vec4 res = alpha * vec4(color, 1);
 	imageStore(texture3D, ivec3(voxelDimension * voxel), res); 
 }
