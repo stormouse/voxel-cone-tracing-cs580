@@ -75,7 +75,7 @@ void VoxelVisualization::RenderVoxelVisualization(RENDER_SCENE& scene, GLuint vo
 	glDisable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
 
-	glActiveTexture(GL_TEXTURE0);
+	glActiveTexture(GL_TEXTURE0); 
 	glBindTexture(GL_TEXTURE_2D, frontFBO->textureBuffer);
 	glUniform1i(glGetUniformLocation(voxelVisualizationProgram, textureFrontName), 0);
 
