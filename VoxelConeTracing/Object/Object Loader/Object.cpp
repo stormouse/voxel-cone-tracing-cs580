@@ -16,10 +16,13 @@ Object::Object(string path) {
 }
 
 Object::~Object() {
-	for (auto * mat : materials) {
-		delete mat;
-		mat = NULL;
+	if (this->has_material) {
+		for (auto * mat : materials) {
+			delete mat;
+			mat = NULL;
+		}
 	}
+	
 }
 
 void Object::CheckObjectPath() {
@@ -237,20 +240,26 @@ void Object::AssignMaterial() {
 	switch (this->objectType) {
 	case Buddha:
 		BuddhaMaterial();
+		this->has_material = true;
 		break;
 	case Bunny:
 		BunnyMaterial();
+		this->has_material = true;
 		break;
 	case Cornell:
 		CornellMaterial();
+		this->has_material = true;
 		break;
 	case Dragon:
 		DragonMaterial();
+		this->has_material = true;
 		break;
 	case Susanne:
 		SusanneMaterial();
+		this->has_material = true;
 		break;
 	default:
+		this->has_material = false;
 		break;
 	}
 }
@@ -324,12 +333,8 @@ void Object::SusanneMaterial() {
 
 /*Uploading rendering settings to shader*/
 void Object::Render(GLuint program) {
-	bool has_material = false;
-	if (!materials.empty()) {
-		has_material = true;
-	}
 	for (int i = 0; i < this->mesh_size; i++) {
-		if (has_material) {
+		if (this->has_material) {
 			materials[i]->BindMaterialToProgram(program);
 		}		
 		meshes[i].BindMeshToProgram(program);

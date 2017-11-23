@@ -52,17 +52,18 @@ void VoxelVisualization::RenderVoxelVisualization(RENDER_SCENE& scene, GLuint vo
 	glEnable(GL_CULL_FACE);
 	glEnable(GL_DEPTH_TEST);
 
-	glCullFace(GL_BACK);
-	glBindFramebuffer(GL_FRAMEBUFFER, frontFBO->frameBuffer);
-	glViewport(0, 0, frontFBO->width, frontFBO->height);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	cube->Render(worldPostionProgram);
-
 	glCullFace(GL_FRONT);
 	glBindFramebuffer(GL_FRAMEBUFFER, backFBO->frameBuffer);
 	glViewport(0, 0, backFBO->width, backFBO->height);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	cube->Render(worldPostionProgram);
+
+	glCullFace(GL_BACK);
+	glBindFramebuffer(GL_FRAMEBUFFER, frontFBO->frameBuffer);
+	glViewport(0, 0, frontFBO->width, frontFBO->height);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	cube->Render(worldPostionProgram);
+	
 	glUseProgram(0);
 
 	GLuint voxelVisualizationProgram = voxelVisualizationShader->Program;
