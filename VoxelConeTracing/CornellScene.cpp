@@ -8,7 +8,7 @@ CornellScene::CornellScene()
 	this->screenWidth = 800;
 	this->screenHeight = 600;
 
-	this->cameraPosition = glm::vec3(0.0f, 0.0f, -10.0f);
+	this->cameraPosition = glm::vec3(0.0f, 0.0f, -3.0f);
 	this->cameraMoveSpeed = 0.02f;
 
 	this->cameraProjection = glm::perspective(45.0f, (float)screenWidth / (float)screenHeight, 0.1f, 30.0f);

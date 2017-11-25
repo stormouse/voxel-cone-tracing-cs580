@@ -1,4 +1,5 @@
 #pragma once
+
 class Scene
 {
 public:
@@ -11,6 +12,7 @@ public:
 	virtual const float* getViewTransform() = 0;
 	virtual const float* getProjectionTransform() = 0;
 	virtual void    SetScreenSize(int w, int h) = 0;
+	virtual void	BindCameraToProgram(unsigned int program) = 0;
 
 	float worldSize = 2.0f;
 	
