@@ -115,7 +115,13 @@ int main(int argc, char **argv) {
 		glfwSetCursorPos(window, 400, 300);
 		camera_movement_control(scene);
 
-		vv.RenderVoxelVisualization(*scene, app.voxelTexture3D);
+		//vv.RenderVoxelVisualization(*scene, app.voxelTexture3D);
+
+		//fixed camera
+		app.renderConeTracing();
+		//movable camera
+		//app.renderConeTracing(*scene, app.voxelTexture3D);
+
 		glfwSwapBuffers(window);
 	}
 
