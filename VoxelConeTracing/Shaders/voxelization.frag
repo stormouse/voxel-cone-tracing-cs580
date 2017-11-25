@@ -18,7 +18,7 @@ layout(rgba8) uniform image3D texture3D;
 void main(){
 	// calculate point light color
 	float dist = distance(lightPosition, fragPosition_worldspace);
-	float attenuate = 1.0 / (1.0 + dist * dist);
+	float attenuate = 1.2 / (1.0 + dist * dist);
 	vec3 direction = normalize(lightPosition - fragPosition_worldspace);
 	float affine = clamp(dot(direction, fragNormal), 0, 1);
 	vec3 color = lightColor * lightIntensity * affine * attenuate;

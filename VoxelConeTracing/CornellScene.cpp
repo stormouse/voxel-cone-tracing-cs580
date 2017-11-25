@@ -8,7 +8,7 @@ CornellScene::CornellScene()
 	this->screenWidth = 800;
 	this->screenHeight = 600;
 
-	this->cameraPosition = glm::vec3(0.0f, 0.0f, -3.0f);
+	this->cameraPosition = glm::vec3(0.0f, 0.0f, -10.0f);
 	this->cameraMoveSpeed = 0.02f;
 
 	this->cameraProjection = glm::perspective(45.0f, (float)screenWidth / (float)screenHeight, 0.1f, 30.0f);
@@ -23,6 +23,13 @@ CornellScene::CornellScene()
 	this->cameraRight = glm::vec3(glm::vec4(1.0f, 0.0f, 0.0f, 0.0f) * cameraRotateY * cameraRotateX);
 
 	object = new Object("Assets\\Models\\cornell.obj");
+
+	light.color = glm::vec3(1.4f, 0.9f, 0.35f);
+	light.color = glm::normalize(light.color);
+	light.intensity = 2.3f;
+	light.position = glm::vec3(0, 0.6f, 0);
+
+	lightTimeArg = 0.0f;
 
 }
 
@@ -61,23 +68,36 @@ void CornellScene::RotateCamera(float dx, float dy) {
 }
 
 
-inline float CornellScene::_getTimeMS() {
+inline double CornellScene::_getTimeMS() {
 	using namespace std::chrono;
 	milliseconds ms = duration_cast<milliseconds>(
 		system_clock::now().time_since_epoch());
 	int64_t now = ms.count();
-	return (float)now * 0.001f;
+	return (double)now * 0.001f;
 }
 
 void CornellScene::Render() {
-	float now = _getTimeMS();
-	float deltaTime = now - lastRenderTime;
+	double now = _getTimeMS();
+	double deltaTime = now - lastRenderTime;
 	lastRenderTime = now;
 
 	glm::mat4 modelMat = glm::mat4(1.0f);
 }
 
 void CornellScene::Render(GLuint program) {
+
+	double now = _getTimeMS();
+	double deltaTime = now - lastRenderTime;
+	lastRenderTime = now;
+
+	lightTimeArg += deltaTime * 1.5f;
+
+	light.position = glm::vec3(0.7f*cos(lightTimeArg), 0.1f, 0.7f*sin(lightTimeArg)+0.1f);
+
+	glUniform3fv(glGetUniformLocation(program, lightPositionName), 1, glm::value_ptr(light.position));
+	glUniform3fv(glGetUniformLocation(program, lightColorName), 1, glm::value_ptr(light.color));
+	glUniform1f(glGetUniformLocation(program, lightIntensityName), light.intensity);
+
 	object->Render(program);
 }
 

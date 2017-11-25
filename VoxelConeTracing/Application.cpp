@@ -1,20 +1,19 @@
 #include "Application.h"
 
+#include "Scene.h"
 #include "CornellScene.h"
+#include "VoxelVisualization.h"
+
 #include "namespace.h"
 
 
 
 Application::Application()
 {
-	this->scene = new CornellScene();
+	InitGL();
+
 	this->voxelDimensions = 64;
 
-	//light.color = glm::vec3(1.0f, 1.0f, 1.0f);
-	light.color = glm::vec3(1.4f, 0.9f, 0.35f);
-	light.color = glm::normalize(light.color);
-	light.intensity = 2.3f;
-	light.position = glm::vec3(-0.2f, 0.6f, 0.6f);
 
 	// load shader
 	char* vvs = "Shaders/voxelization.vert";
@@ -88,9 +87,9 @@ void Application::GenerateVoxelMap() {
 	glUniform1i(glGetUniformLocation(voxelizationShader->Program, voxelDimensionName), voxelDimensions);
 	glUniformMatrix4fv(glGetUniformLocation(voxelizationShader->Program, viewMatrixName), 1, GL_FALSE, scene->getViewTransform());
 	glUniformMatrix4fv(glGetUniformLocation(voxelizationShader->Program, projectionMatrixName), 1, GL_FALSE, scene->getProjectionTransform());
-	glUniform3fv(glGetUniformLocation(voxelizationShader->Program, lightPositionName), 1, glm::value_ptr(light.position));
-	glUniform3fv(glGetUniformLocation(voxelizationShader->Program, lightColorName), 1, glm::value_ptr(light.color));
-	glUniform1f(glGetUniformLocation(voxelizationShader->Program, lightIntensityName), light.intensity);
+	//glUniform3fv(glGetUniformLocation(voxelizationShader->Program, lightPositionName), 1, glm::value_ptr(light.position));
+	//glUniform3fv(glGetUniformLocation(voxelizationShader->Program, lightColorName), 1, glm::value_ptr(light.color));
+	//glUniform1f(glGetUniformLocation(voxelizationShader->Program, lightIntensityName), light.intensity);
 
 
 	int texIdx = 0;
@@ -120,6 +119,7 @@ void Application::renderConeTracing(RENDER_SCENE& scene, GLuint voxelTextureID) 
 	//gl setting
 	int viewportWidth = 800;
 	int viewportHeight = 600;
+
 	//glfwGetWindowSize(currentWindow, &viewportWidth, &viewportHeight);
 	glViewport(0, 0, viewportWidth, viewportHeight);
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0);
@@ -132,19 +132,16 @@ void Application::renderConeTracing(RENDER_SCENE& scene, GLuint voxelTextureID) 
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	//upload camera info to shader
-	//this->scene->BindCameraToProgram(curProgram);
 	scene.BindCameraToProgram(curProgram);
+
 	//upload voxel info
 	glUniform1i(glGetUniformLocation(curProgram, voxelDimensionName), voxelDimensions);
+
 	//upload transform matrix
-	//glUniformMatrix4fv(glGetUniformLocation(curProgram, viewMatrixName), 1, GL_FALSE, this->scene->getViewTransform());
-	//glUniformMatrix4fv(glGetUniformLocation(curProgram, projectionMatrixName), 1, GL_FALSE, this->scene->getProjectionTransform());
 	glUniformMatrix4fv(glGetUniformLocation(curProgram, viewMatrixName), 1, GL_FALSE, scene.getViewTransform());
 	glUniformMatrix4fv(glGetUniformLocation(curProgram, projectionMatrixName), 1, GL_FALSE, scene.getViewTransform());
-	//upload light info to shader
-	glUniform3fv(glGetUniformLocation(curProgram, lightPositionName), 1, glm::value_ptr(light.position));
-	glUniform3fv(glGetUniformLocation(curProgram, lightColorName), 1, glm::value_ptr(light.color));
-	glUniform1f(glGetUniformLocation(curProgram, lightIntensityName), light.intensity);
+
+
 	//active the texture unit
 	glActiveTexture(GL_TEXTURE3);
 	//glBindTexture(GL_TEXTURE_3D, voxelTexture3D);
@@ -160,20 +157,17 @@ void Application::renderConeTracing() {
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glUseProgram(curProgram);
 
-	//for test
-	light.color = glm::vec3(1.0, 1.0, 1.0);
 
 	//upload camera info to shader
 	this->scene->BindCameraToProgram(curProgram);
+
 	//upload voxel info
 	glUniform1i(glGetUniformLocation(curProgram, voxelDimensionName), voxelDimensions);
+
 	//upload transform matrix
 	glUniformMatrix4fv(glGetUniformLocation(curProgram, viewMatrixName), 1, GL_FALSE, this->scene->getViewTransform());
 	glUniformMatrix4fv(glGetUniformLocation(curProgram, projectionMatrixName), 1, GL_FALSE, this->scene->getProjectionTransform());
-	//upload light info to shader
-	glUniform3fv(glGetUniformLocation(curProgram, lightPositionName), 1, glm::value_ptr(light.position));
-	glUniform3fv(glGetUniformLocation(curProgram, lightColorName), 1, glm::value_ptr(light.color));
-	glUniform1f(glGetUniformLocation(curProgram, lightIntensityName), light.intensity);
+
 	//active the texture unit
 	glActiveTexture(GL_TEXTURE3);
 	glBindTexture(GL_TEXTURE_3D, voxelTexture3D);
@@ -182,6 +176,7 @@ void Application::renderConeTracing() {
 	//gl setting
 	int viewportWidth = 800;
 	int viewportHeight = 600;
+
 	//glfwGetWindowSize(currentWindow, &viewportWidth, &viewportHeight);
 	glViewport(0, 0, viewportWidth, viewportHeight);
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0);
@@ -196,3 +191,68 @@ void Application::renderConeTracing() {
 
 	this->scene->Render(curProgram);
 }
+
+
+
+
+int Application::InitGL() {
+	if (!glfwInit()) {
+		return EXIT_FAILURE;
+	}
+
+	glfwSetErrorCallback(error_callback);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_COMPAT_PROFILE);
+	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
+
+	window = glfwCreateWindow(800, 600, "CS580 Voxel Cone Tracing", NULL, NULL);
+
+	if (!window) {
+		glfwTerminate();
+		return EXIT_FAILURE;
+	}
+
+	glfwMakeContextCurrent(window);
+	glfwSetKeyCallback(window, key_callback);
+
+	glewExperimental = GL_TRUE;
+	glewInit();
+
+	GLuint vao;
+	glGenVertexArrays(1, &vao);
+	glBindVertexArray(vao);
+
+	return 0;
+}
+
+
+
+int Application::Run() {
+
+	this->scene = new CornellScene();
+
+	while (!glfwWindowShouldClose(window)) {
+		glfwPollEvents();
+
+		glfwGetCursorPos(window, &curr_mouse_x, &curr_mouse_y);
+		camera_rotation_control(scene);
+		glfwSetCursorPos(window, 400, 300);
+		camera_movement_control(scene);
+
+		this->Render();
+
+		glfwSwapBuffers(window);
+	}
+
+	return 0;
+}
+
+
+void Application::Render() {
+	//vv.RenderVoxelVisualization(*scene, app.voxelTexture3D);
+	this->GenerateVoxelMap();
+	renderConeTracing();
+}
+
+

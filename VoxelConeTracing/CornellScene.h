@@ -9,6 +9,11 @@
 
 #include "Object\Object Loader\Object.h"
 
+struct PointLight {
+	glm::vec3 position;
+	glm::vec3 color;
+	float	  intensity;
+};
 
 class CornellScene : public Scene
 {
@@ -44,12 +49,12 @@ private:
 	glm::mat4	cameraRotateX;
 	glm::mat4	cameraRotateY;
 
-	std::vector<glm::vec3> pointLightSources;
 
+	PointLight	light;
+	double		lightTimeArg;
+	double		lastRenderTime;
 
-	float		lastRenderTime;
-
-	float		_getTimeMS();
+	double		_getTimeMS();
 
 // debug use
 public:
