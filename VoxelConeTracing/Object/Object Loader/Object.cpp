@@ -10,9 +10,9 @@ Object::Object(string path) {
 	else {
 		this->createQuad();
 	}
-	this->BindObjectToBuffer();
 	this->TransformObject();
 	this->AssignMaterial();
+	this->BindObjectToBuffer();
 }
 
 Object::~Object() {
@@ -46,6 +46,9 @@ void Object::CheckObjectPath() {
 	}
 	else if (this->obj_path.find("quad") != string::npos) {
 		this->objectType = Quad;
+	}
+	else if (this->obj_path.find("teapot") != string::npos) {
+		this->objectType = Teapot;
 	}
 	else {
 		this->objectType = None;
@@ -186,6 +189,9 @@ void Object::TransformObject() {
 	case Susanne:
 		TransformSusanne();
 		break;
+	case Teapot:
+		TransformTeapot();
+		break;
 	default:
 		break;
 	}
@@ -204,7 +210,7 @@ void Object::TransformBunny() {
 	for (int i = 0; i < this->mesh_size; i++) {
 		meshes[i].transform.scale = glm::vec3(0.31f);
 		meshes[i].transform.rotation = glm::vec3(0, 0.4, 0);
-		meshes[i].transform.position = glm::vec3(0.44, -0.52, 0);
+		meshes[i].transform.position = glm::vec3(0.44, -0.62, 0);
 		meshes[i].transform.updateTransformMatrix();
 	}
 }
@@ -215,6 +221,7 @@ void Object::TransformCornell() {
 		meshes[i].transform.position -= glm::vec3(0, 0, 0);
 		meshes[i].transform.updateTransformMatrix();
 	}
+	this->mesh_size = meshes.size() - 2;
 }
 
 void Object::TransformDragon() {
@@ -229,8 +236,17 @@ void Object::TransformDragon() {
 void Object::TransformSusanne() {
 	for (int i = 0; i < this->mesh_size; i++) {
 		meshes[i].transform.scale = glm::vec3(0.23f);
-		meshes[i].transform.rotation = glm::vec3(0, 0.3, 0);
-		meshes[i].transform.position = glm::vec3(0.07, -0.49, 0.36);
+		meshes[i].transform.rotation = glm::vec3(0, 0, 0);
+		meshes[i].transform.position = glm::vec3(-0.44, -0.45, -0.2);
+		meshes[i].transform.updateTransformMatrix();
+	}
+}
+
+void Object::TransformTeapot() {
+	for (int i = 0; i < this->mesh_size; i++) {
+		meshes[i].transform.scale = glm::vec3(0.05f);
+		meshes[i].transform.rotation = glm::vec3(0, 0, 0);
+		meshes[i].transform.position = glm::vec3(0, 0.15, -0.36); 
 		meshes[i].transform.updateTransformMatrix();
 	}
 }
@@ -256,6 +272,10 @@ void Object::AssignMaterial() {
 		break;
 	case Susanne:
 		SusanneMaterial();
+		this->has_material = true;
+		break;
+	case Teapot:
+		TeapotMaterial();
 		this->has_material = true;
 		break;
 	default:
@@ -327,6 +347,19 @@ void Object::SusanneMaterial() {
 		material->diffuseReflectivity = 0.0f;
 		material->specularDiffusion = 3.2f;
 		material->transparency = 1.0f;
+		materials.push_back(material);
+	}
+}
+
+void Object::TeapotMaterial() {
+	for (int i = 0; i < this->mesh_size; i++) {
+		Material *material = Material::White();
+		material->specularColor = glm::vec3(1.0, 0.8, 0.6);
+		material->diffuseColor = material->specularColor;
+		material->emissivity = 0.0f;
+		material->specularReflectivity = 1.0f;
+		material->diffuseReflectivity = 0.0f;
+		material->specularDiffusion = 2.2f;
 		materials.push_back(material);
 	}
 }

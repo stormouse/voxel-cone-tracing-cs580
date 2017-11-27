@@ -23,6 +23,9 @@ CornellScene::CornellScene()
 	this->cameraRight = glm::vec3(glm::vec4(1.0f, 0.0f, 0.0f, 0.0f) * cameraRotateY * cameraRotateX);
 
 	object = new Object("Assets\\Models\\cornell.obj");
+	bunny = new Object("Assets\\Models\\bunny.obj");
+	susanne = new Object("Assets\\Models\\susanne.obj");
+	teapot = new Object("Assets\\Models\\teapot.obj");
 
 	light.color = glm::vec3(1.4f, 0.9f, 0.35f);
 	light.color = glm::normalize(light.color);
@@ -37,6 +40,9 @@ CornellScene::CornellScene()
 CornellScene::~CornellScene()
 {
 	delete object;
+	delete bunny;
+	delete susanne;
+	delete teapot;
 }
 
 
@@ -99,6 +105,9 @@ void CornellScene::Render(GLuint program) {
 	glUniform1f(glGetUniformLocation(program, lightIntensityName), light.intensity);
 
 	object->Render(program);
+	bunny->Render(program);
+	susanne->Render(program);
+	teapot->Render(program);
 }
 
 const float* CornellScene::getViewTransform() {

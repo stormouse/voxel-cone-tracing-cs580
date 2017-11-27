@@ -31,6 +31,7 @@ enum ObjectType
 	Dragon,
 	Susanne,
 	Quad,
+	Teapot,
 	None
 };
 
@@ -63,6 +64,7 @@ private:
 	void TransformCornell();
 	void TransformDragon();	
 	void TransformSusanne();
+	void TransformTeapot();
 
 	void AssignMaterial();
 	void BuddhaMaterial();
@@ -70,6 +72,7 @@ private:
 	void CornellMaterial();
 	void DragonMaterial();
 	void SusanneMaterial();
+	void TeapotMaterial();
 
 
 public:

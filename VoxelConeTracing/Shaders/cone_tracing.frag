@@ -257,7 +257,7 @@ void main(){
     color = vec4(vec3(0.0f), 1.0);
 
     //calculate the direction from view to fragment
-    const vec3 viewDirect = normalize(worldPosFrag - cameraPosition);
+    const vec3 viewDirect = normalize(cameraPosition - worldPosFrag);
 
     // Indirect diffuse light.
 	if(diffuseReflectivity * (1.0f - transparency) > 0.01f) 

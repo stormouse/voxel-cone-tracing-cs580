@@ -58,7 +58,7 @@ private:
 
 // debug use
 public:
-	Object *object;
+	Object *object, *bunny, *susanne, *teapot;
 
 };
 
